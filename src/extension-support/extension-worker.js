@@ -43,6 +43,11 @@ class ExtensionWorker {
         }
         return promise;
     }
+
+    registerWithRuntime (extensionObject) {
+        extensionObject.runtime = this.runtime;
+        this.register(extensionObject);
+    }
 }
 
 global.Scratch = global.Scratch || {};
@@ -55,5 +60,6 @@ global.Scratch.TargetType = TargetType;
  */
 const extensionWorker = new ExtensionWorker();
 global.Scratch.extensions = {
-    register: extensionWorker.register.bind(extensionWorker)
+    register: extensionWorker.register.bind(extensionWorker),
+    registerWithRuntime: extensionWorker.register.bind(extensionWorker)
 };
