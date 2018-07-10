@@ -45,7 +45,7 @@ class ExtensionWorker {
     }
 
     registerWithRuntime (extensionObject) {
-        extensionObject.runtime = this.runtime;
+        extensionObject.dispatch = dispatch;
         this.register(extensionObject);
     }
 }
@@ -61,5 +61,5 @@ global.Scratch.TargetType = TargetType;
 const extensionWorker = new ExtensionWorker();
 global.Scratch.extensions = {
     register: extensionWorker.register.bind(extensionWorker),
-    registerWithRuntime: extensionWorker.register.bind(extensionWorker)
+    registerWithRuntime: extensionWorker.registerWithRuntime.bind(extensionWorker)
 };
