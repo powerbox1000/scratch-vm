@@ -186,9 +186,11 @@ class ExtensionManager {
      * Collect extension metadata from the specified service and begin the extension registration process.
      * @param {string} serviceName - the name of the service hosting the extension.
      */
-    registerExtensionService (extensionURL, serviceName) {
-        this._loadedExtensions.set(extensionURL, serviceName);
-        this._loadedExtensionsButTheOtherWay.set(serviceName, extensionURL);
+    registerExtensionService (serviceName, extensionURL) {
+        if (extensionURL) {
+          this._loadedExtensions.set(extensionURL, serviceName);
+          this._loadedExtensionsButTheOtherWay.set(serviceName, extensionURL);
+        }
         dispatch.call(serviceName, 'getInfo').then(info => {
             this._registerExtensionInfo(serviceName, info);
         });
