@@ -104,7 +104,6 @@ let rendererDrawProfilerId = -1;
  */
 class Runtime extends EventEmitter {
     constructor () {
-      console.log('loooooooooool');
         super();
 
         /**

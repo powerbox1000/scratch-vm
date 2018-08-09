@@ -206,10 +206,10 @@ class Scratch3TranslateBlocks {
      */
     getTranslate (args) {
         // Don't remake the request if we already have the value.
-        // if (this._lastTextTranslated === args.WORDS &&
-        //     this._lastLangTranslated === args.LANGUAGE) {
-        //     return this._translateResult;
-        // }
+        if (this._lastTextTranslated === args.WORDS &&
+            this._lastLangTranslated === args.LANGUAGE) {
+            return this._translateResult;
+        }
 
         const lang = this.getLanguageCodeFromArg(args.LANGUAGE);
 

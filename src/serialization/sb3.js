@@ -467,11 +467,13 @@ const getSimplifiedLayerOrdering = function (targets) {
 
 /**
  * Serializes the specified VM runtime.
- * @param {!Runtime} runtime VM runtime instance to be serialized.
+ * @param {!VirtualMachine} vm VM instance to be serialized.
  * @param {string=} targetId Optional target id if serializing only a single target
  * @return {object} Serialized runtime instance.
  */
-const serialize = function (runtime, targetId) {
+const serialize = function (vm, targetId) {
+    const runtime = vm.runtime;
+
     // Fetch targets
     const obj = Object.create(null);
     // Create extension set to hold extension ids found while serializing targets
@@ -506,6 +508,7 @@ const serialize = function (runtime, targetId) {
 
     // Assemble extension list
     obj.extensions = Array.from(extensions);
+    obj.urls = obj.extensions.map(extensionID => vm.extensionManager.extemsionURLs.get(extensionID));
 
     // Assemble metadata
     const meta = Object.create(null);
@@ -978,6 +981,12 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
         extensionIDs: new Set(),
         extensionURLs: new Map()
     };
+
+    if (!isSingleSprite && json.urls) {
+      json.extensions.forEach((extensionID, index) => {
+        extensions.extensionURLs.set(extensionID, json.urls[index]);
+      });
+    }
 
     // First keep track of the current target order in the json,
     // then sort by the layer order property before parsing the targets

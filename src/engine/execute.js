@@ -462,7 +462,7 @@ const execute = function (sequencer, thread) {
 
         currentStackFrame.reporting = null;
         currentStackFrame.reported = null;
-        return; 
+        return;
     }
 
     for (; i < length; i++) {

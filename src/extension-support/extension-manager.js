@@ -91,6 +91,20 @@ class ExtensionManager {
         this._loadedExtensions = new Map();
 
         /**
+         * Same as the last one but I couldn't find an easy way to get a key by a value on Google.
+         * Also, I need to filter out the built-in extensions somehow.
+         * @type {Set.<string>}
+         * @private
+         */
+        this._loadedExtensionsButTheOtherWay = new Map();
+
+        /**
+         * Set of loaded extension URLs.
+         * @type {Set.<string>}
+         */
+        this.extensionURLs = new Map();
+
+        /**
          * Keep a reference to the runtime so we can construct internal extension objects.
          * TODO: remove this in favor of extensions accessing the runtime as a service.
          * @type {Runtime}
@@ -172,7 +186,9 @@ class ExtensionManager {
      * Collect extension metadata from the specified service and begin the extension registration process.
      * @param {string} serviceName - the name of the service hosting the extension.
      */
-    registerExtensionService (serviceName) {
+    registerExtensionService (extensionURL, serviceName) {
+        this._loadedExtensions.set(extensionURL, serviceName);
+        this._loadedExtensionsButTheOtherWay.set(serviceName, extensionURL);
         dispatch.call(serviceName, 'getInfo').then(info => {
             this._registerExtensionInfo(serviceName, info);
         });
@@ -245,6 +261,7 @@ class ExtensionManager {
         if (!/^[a-z0-9]+$/i.test(extensionInfo.id)) {
             throw new Error('Invalid extension id');
         }
+        this.extensionURLs.set(extensionInfo.id, this._loadedExtensionsButTheOtherWay.get(serviceName) || null);
         extensionInfo.name = extensionInfo.name || extensionInfo.id;
         extensionInfo.blocks = extensionInfo.blocks || [];
         extensionInfo.targetTypes = extensionInfo.targetTypes || [];
