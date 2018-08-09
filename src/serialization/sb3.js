@@ -508,7 +508,7 @@ const serialize = function (vm, targetId) {
 
     // Assemble extension list
     obj.extensions = Array.from(extensions);
-    obj.urls = obj.extensions.map(extensionID => vm.extensionManager.extemsionURLs.get(extensionID));
+    obj.urls = obj.extensions.map(extensionID => vm.extensionManager.extensionURLs.get(extensionID));
 
     // Assemble metadata
     const meta = Object.create(null);
