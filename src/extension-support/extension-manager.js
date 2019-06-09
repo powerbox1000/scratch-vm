@@ -201,9 +201,11 @@ class ExtensionManager {
     /**
      * Collect extension metadata from the specified service and begin the extension registration process.
      * @param {string} serviceName - the name of the service hosting the extension.
+     * @param {string} extensionURL - the URL of the extension
      */
-    registerExtensionService (serviceName) {
+    registerExtensionService (serviceName, extensionURL) {
         dispatch.call(serviceName, 'getInfo').then(info => {
+            info.extensionURL = extensionURL;
             this._registerExtensionInfo(serviceName, info);
         });
     }
@@ -272,6 +274,9 @@ class ExtensionManager {
         extensionInfo = Object.assign({}, extensionInfo);
         if (!/^[a-z0-9]+$/i.test(extensionInfo.id)) {
             throw new Error('Invalid extension id');
+        }
+        if (extensionInfo.extensionURL) {
+          this._loadedExtensions.set(extensionInfo.id, serviceName);
         }
         extensionInfo.name = extensionInfo.name || extensionInfo.id;
         extensionInfo.blocks = extensionInfo.blocks || [];
