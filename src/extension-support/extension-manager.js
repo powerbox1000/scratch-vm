@@ -417,7 +417,7 @@ class ExtensionManager {
             const callBlockFunc = (() => {
                 if (dispatch._isRemoteService(serviceName)) {
                     return (args, util, realBlockInfo) =>
-                        dispatch.call(serviceName, funcName, args, util, realBlockInfo);
+                        dispatch.call(serviceName, funcName, args);
                 }
 
                 // avoid promise latency if we can call direct
