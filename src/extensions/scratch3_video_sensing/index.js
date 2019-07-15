@@ -126,7 +126,7 @@ class Scratch3VideoSensingBlocks {
      * @type {Array.<number>}
      */
     static get DIMENSIONS () {
-        return [480, 360];
+        return [640, 360];
     }
 
     /**

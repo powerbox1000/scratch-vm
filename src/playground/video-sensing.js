@@ -7,7 +7,7 @@
         audio: false,
         video: {
             width: {min: 480, ideal: 640},
-            height: {min: 360, ideal: 480}
+            height: {min: 270, ideal: 360}
         }
     }, stream => {
         video.autoplay = true;

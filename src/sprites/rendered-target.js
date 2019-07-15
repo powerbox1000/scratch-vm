@@ -73,7 +73,7 @@ class RenderedTarget extends Target {
         this.isStage = false;
 
         /**
-         * Scratch X coordinate. Currently should range from -240 to 240.
+         * Scratch X coordinate. Currently should range from -320 to 320.
          * @type {Number}
          */
         this.x = 0;

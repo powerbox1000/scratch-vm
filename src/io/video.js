@@ -61,7 +61,7 @@ class Video {
      * @type {Array.<number>}
      */
     static get DIMENSIONS () {
-        return [480, 360];
+        return [640, 360];
     }
 
     /**
@@ -107,7 +107,7 @@ class Video {
      * Return frame data from the video feed in a specified dimensions, format, and mirroring.
      *
      * @param {object} frameInfo A descriptor of the frame you would like to receive.
-     * @param {Array.<number>} frameInfo.dimensions [width, height] array of numbers.  Defaults to [480,360]
+     * @param {Array.<number>} frameInfo.dimensions [width, height] array of numbers.  Defaults to [640,360]
      * @param {boolean} frameInfo.mirror If you specificly want a mirror/non-mirror frame, defaults to the global
      *                                   mirror state (ioDevices.video.mirror)
      * @param {string} frameInfo.format Requested video format, available formats are 'image-data' and 'canvas'.

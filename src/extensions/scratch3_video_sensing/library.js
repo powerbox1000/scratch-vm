@@ -13,7 +13,7 @@ const {motionVector, scratchAtan2} = require('./math');
  * The width of the intended resolution to analyze for motion.
  * @type {number}
  */
-const WIDTH = 480;
+const WIDTH = 640;
 
 /**
  * The height of the intended resolution to analyze for motion.

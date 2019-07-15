@@ -60,9 +60,9 @@ class Mouse {
         if (data.x) {
             this._clientX = data.x;
             this._scratchX = Math.round(MathUtil.clamp(
-                480 * ((data.x / data.canvasWidth) - 0.5),
-                -240,
-                240
+                640 * ((data.x / data.canvasWidth) - 0.5),
+                -320,
+                320
             ));
         }
         if (data.y) {

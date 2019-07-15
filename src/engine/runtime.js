@@ -374,7 +374,7 @@ class Runtime extends EventEmitter {
      * @const {number}
      */
     static get STAGE_WIDTH () {
-        return 480;
+        return 640;
     }
 
     /**

@@ -1,6 +1,6 @@
 const {motionVector} = require('./math');
 
-const WIDTH = 480;
+const WIDTH = 640;
 const HEIGHT = 360;
 const WINSIZE = 8;
 const AMOUNT_SCALE = 100;
