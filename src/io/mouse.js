@@ -60,17 +60,17 @@ class Mouse {
         if (data.x) {
             this._clientX = data.x;
             this._scratchX = Math.round(MathUtil.clamp(
-                640 * ((data.x / data.canvasWidth) - 0.5),
-                -320,
-                320
+                this.runtime.stageWidth * ((data.x / data.canvasWidth) - 0.5),
+                -this.runtime.stageWidth / 2,
+                this.runtime.stageWidth / 2
             ));
         }
         if (data.y) {
             this._clientY = data.y;
             this._scratchY = Math.round(MathUtil.clamp(
-                -360 * ((data.y / data.canvasHeight) - 0.5),
-                -180,
-                180
+                -this.runtime.stageHeight * ((data.y / data.canvasHeight) - 0.5),
+                -this.runtime.stageHeight,
+                this.runtime.stageHeight
             ));
         }
         if (typeof data.isDown !== 'undefined') {

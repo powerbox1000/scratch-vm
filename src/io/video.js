@@ -50,20 +50,20 @@ class Video {
     }
 
     /**
-     * Dimensions the video stream is analyzed at after its rendered to the
-     * sample canvas.
-     * @type {Array.<number>}
-     */
-    static get DIMENSIONS () {
-        return [640, 360];
-    }
-
-    /**
      * Order preview drawable is inserted at in the renderer.
      * @type {number}
      */
     static get ORDER () {
         return 1;
+    }
+
+    /**
+     * Dimensions the video stream is analyzed at after its rendered to the
+     * sample canvas.
+     * @type {Array.<number>}
+     */
+    get dimensions () {
+        return [this.runtime.stageWidth, this.runtime.stageHeight];
     }
 
     /**
@@ -111,7 +111,7 @@ class Video {
      * @return {ArrayBuffer|Canvas|string|null} Frame data in requested format, null when errors.
      */
     getFrame ({
-        dimensions = Video.DIMENSIONS,
+        dimensions = Video.dimensions,
         mirror = this.mirror,
         format = Video.FORMAT_IMAGE_DATA,
         cacheTimeout = this._frameCacheTimeout
@@ -136,7 +136,7 @@ class Video {
 
     _disablePreview () {
         if (this._skinId !== -1) {
-            this.runtime.renderer.updateBitmapSkin(this._skinId, new ImageData(...Video.DIMENSIONS), 1);
+            this.runtime.renderer.updateBitmapSkin(this._skinId, new ImageData(...Video.dimensions), 1);
             this.runtime.renderer.updateDrawableProperties(this._drawable, {visible: false});
         }
         this._renderPreviewFrame = null;
@@ -147,7 +147,7 @@ class Video {
         if (!renderer) return;
 
         if (this._skinId === -1 && this._drawable === -1) {
-            this._skinId = renderer.createBitmapSkin(new ImageData(...Video.DIMENSIONS), 1);
+            this._skinId = renderer.createBitmapSkin(new ImageData(...Video.dimensions), 1);
             this._drawable = renderer.createDrawable(StageLayering.VIDEO_LAYER);
             renderer.updateDrawableProperties(this._drawable, {
                 skinId: this._skinId
@@ -175,7 +175,7 @@ class Video {
                 });
 
                 if (!imageData) {
-                    renderer.updateBitmapSkin(this._skinId, new ImageData(...Video.DIMENSIONS), 1);
+                    renderer.updateBitmapSkin(this._skinId, new ImageData(...Video.dimensions), 1);
                     return;
                 }
 

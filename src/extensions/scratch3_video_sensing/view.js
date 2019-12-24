@@ -1,7 +1,5 @@
 const {motionVector} = require('./math');
 
-const WIDTH = 640;
-const HEIGHT = 360;
 const WINSIZE = 8;
 const AMOUNT_SCALE = 100;
 const THRESHOLD = 10;
@@ -164,8 +162,8 @@ class VideoMotionView {
          * @type {HTMLCanvasElement}
          */
         const canvas = this.canvas = document.createElement('canvas');
-        canvas.width = WIDTH;
-        canvas.height = HEIGHT;
+        canvas.width = motion.width;
+        canvas.height = motion.height;
 
         /**
          * 2D context to draw to debug canvas.
@@ -183,7 +181,7 @@ class VideoMotionView {
          * Pixel buffer to store output values into before they replace the last frames info in the debug canvas.
          * @type {Uint32Array}
          */
-        this.buffer = new Uint32Array(WIDTH * HEIGHT);
+        this.buffer = new Uint32Array(motion.width * motion.height);
     }
 
     /**
@@ -205,7 +203,7 @@ class VideoMotionView {
     _eachAddress (xStart, yStart, xStop, yStop, fn) {
         for (let i = yStart; i < yStop; i++) {
             for (let j = xStart; j < xStop; j++) {
-                const address = (i * WIDTH) + j;
+                const address = (i * this.motion.width) + j;
                 fn(address, j, i);
             }
         }
@@ -246,7 +244,7 @@ class VideoMotionView {
     _grads (address) {
         const {curr, prev} = this.motion;
         const gradX = (curr[address - 1] & 0xff) - (curr[address + 1] & 0xff);
-        const gradY = (curr[address - WIDTH] & 0xff) - (curr[address + WIDTH] & 0xff);
+        const gradY = (curr[address - this.motion.width] & 0xff) - (curr[address + this.motion.width] & 0xff);
         const gradT = (prev[address] & 0xff) - (curr[address] & 0xff);
         return {gradX, gradY, gradT};
     }
@@ -295,12 +293,12 @@ class VideoMotionView {
 
         if (this.output === OUTPUT.INPUT) {
             const {curr} = this.motion;
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 buffer[address] = curr[address];
             });
         }
         if (this.output === OUTPUT.XYT) {
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 const {gradX, gradY, gradT} = this._grads(address);
                 const over1 = gradT / 0xcf;
                 buffer[address] =
@@ -311,8 +309,8 @@ class VideoMotionView {
         }
         if (this.output === OUTPUT.XYT_CELL) {
             const winStep = (WINSIZE * 2) + 1;
-            const wmax = WIDTH - WINSIZE - 1;
-            const hmax = HEIGHT - WINSIZE - 1;
+            const wmax = this.motion.width - WINSIZE - 1;
+            const hmax = this.motion.height - WINSIZE - 1;
 
             this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, eachAddress => {
                 let C1 = 0;
@@ -339,15 +337,15 @@ class VideoMotionView {
             });
         }
         if (this.output === OUTPUT.XY) {
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 const {gradX, gradY} = this._grads(address);
                 buffer[address] = (0xff << 24) + (((gradY + 0xff) / 2) << 8) + ((gradX + 0xff) / 2);
             });
         }
         if (this.output === OUTPUT.XY_CELL) {
             const winStep = (WINSIZE * 2) + 1;
-            const wmax = WIDTH - WINSIZE - 1;
-            const hmax = HEIGHT - WINSIZE - 1;
+            const wmax = this.motion.width - WINSIZE - 1;
+            const hmax = this.motion.height - WINSIZE - 1;
 
             this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, eachAddress => {
                 let C1 = 0;
@@ -373,15 +371,15 @@ class VideoMotionView {
                 });
             });
         } else if (this.output === OUTPUT.T) {
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 const {gradT} = this._grads(address);
                 buffer[address] = (0xff << 24) + ((gradT + 0xff) / 2 << 16);
             });
         }
         if (this.output === OUTPUT.T_CELL) {
             const winStep = (WINSIZE * 2) + 1;
-            const wmax = WIDTH - WINSIZE - 1;
-            const hmax = HEIGHT - WINSIZE - 1;
+            const wmax = this.motion.width - WINSIZE - 1;
+            const hmax = this.motion.height - WINSIZE - 1;
 
             this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, eachAddress => {
                 let T = 0;
@@ -401,7 +399,7 @@ class VideoMotionView {
                 });
             });
         } else if (this.output === OUTPUT.C) {
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 const {gradX, gradY, gradT} = this._grads(address);
                 buffer[address] =
                     (0xff << 24) +
@@ -411,8 +409,8 @@ class VideoMotionView {
         }
         if (this.output === OUTPUT.C_CELL) {
             const winStep = (WINSIZE * 2) + 1;
-            const wmax = WIDTH - WINSIZE - 1;
-            const hmax = HEIGHT - WINSIZE - 1;
+            const wmax = this.motion.width - WINSIZE - 1;
+            const hmax = this.motion.height - WINSIZE - 1;
 
             this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, eachAddress => {
                 let {C2, C1} = this._components(eachAddress);
@@ -428,7 +426,7 @@ class VideoMotionView {
                 });
             });
         } else if (this.output === OUTPUT.AB) {
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 const {gradX, gradY} = this._grads(address);
                 buffer[address] =
                     (0xff << 24) +
@@ -439,8 +437,8 @@ class VideoMotionView {
         }
         if (this.output === OUTPUT.AB_CELL) {
             const winStep = (WINSIZE * 2) + 1;
-            const wmax = WIDTH - WINSIZE - 1;
-            const hmax = HEIGHT - WINSIZE - 1;
+            const wmax = this.motion.width - WINSIZE - 1;
+            const hmax = this.motion.height - WINSIZE - 1;
 
             this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, eachAddress => {
                 let {A2, A1B2, B1} = this._components(eachAddress);
@@ -460,7 +458,7 @@ class VideoMotionView {
         } else if (this.output === OUTPUT.UV) {
             const winStep = (WINSIZE * 2) + 1;
 
-            this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, address => {
+            this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, address => {
                 const {A2, A1B2, B1, C2, C1} = this._components(fn => fn(address));
                 const {u, v} = motionVector(A2, A1B2, B1, C2, C1);
 
@@ -478,8 +476,8 @@ class VideoMotionView {
             });
         } else if (this.output === OUTPUT.UV_CELL) {
             const winStep = (WINSIZE * 2) + 1;
-            const wmax = WIDTH - WINSIZE - 1;
-            const hmax = HEIGHT - WINSIZE - 1;
+            const wmax = this.motion.width - WINSIZE - 1;
+            const hmax = this.motion.height - WINSIZE - 1;
 
             this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, eachAddress => {
                 const {A2, A1B2, B1, C2, C1} = this._components(eachAddress);
@@ -501,7 +499,7 @@ class VideoMotionView {
             });
         }
 
-        const data = new ImageData(new Uint8ClampedArray(this.buffer.buffer), WIDTH, HEIGHT);
+        const data = new ImageData(new Uint8ClampedArray(this.buffer.buffer), this.motion.width, this.motion.height);
         this.context.putImageData(data, 0, 0);
     }
 }

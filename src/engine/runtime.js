@@ -175,8 +175,20 @@ let rendererDrawProfilerId = -1;
  * @constructor
  */
 class Runtime extends EventEmitter {
-    constructor () {
+    constructor (stageWidth, stageHeight) {
         super();
+
+        /**
+         * Width of the stage, in pixels.
+         * @type {number}
+         */
+        this.stageWidth = stageWidth;
+
+        /**
+         * Height of the stage, in pixels.
+         * @type {number}
+         */
+        this.stageHeight = stageHeight;
 
         /**
          * Target management and storage.
@@ -392,22 +404,6 @@ class Runtime extends EventEmitter {
          * @type {function}
          */
         this.removeCloudVariable = this._initializeRemoveCloudVariable(newCloudDataManager);
-    }
-
-    /**
-     * Width of the stage, in pixels.
-     * @const {number}
-     */
-    static get STAGE_WIDTH () {
-        return 640;
-    }
-
-    /**
-     * Height of the stage, in pixels.
-     * @const {number}
-     */
-    static get STAGE_HEIGHT () {
-        return 360;
     }
 
     /**

@@ -83,7 +83,7 @@ class Scratch3VideoSensingBlocks {
          * direction values.
          * @type {VideoMotion}
          */
-        this.detect = new VideoMotion();
+        this.detect = new VideoMotion(this.runtime.stageWidth, this.runtime.stageHeight);
 
         /**
          * The last millisecond epoch timestamp that the video stream was
@@ -121,15 +121,6 @@ class Scratch3VideoSensingBlocks {
     }
 
     /**
-     * Dimensions the video stream is analyzed at after its rendered to the
-     * sample canvas.
-     * @type {Array.<number>}
-     */
-    static get DIMENSIONS () {
-        return [640, 360];
-    }
-
-    /**
      * The key to load & store a target's motion-related state.
      * @type {string}
      */
@@ -147,6 +138,15 @@ class Scratch3VideoSensingBlocks {
             motionAmount: 0,
             motionDirection: 0
         };
+    }
+
+    /**
+     * Dimensions the video stream is analyzed at after its rendered to the
+     * sample canvas.
+     * @type {Array.<number>}
+     */
+    get dimensions () {
+        return [this.runtime.stageWidth, this.runtime.stageHeight];
     }
 
     /**
@@ -242,7 +242,7 @@ class Scratch3VideoSensingBlocks {
         if (offset > Scratch3VideoSensingBlocks.INTERVAL) {
             const frame = this.runtime.ioDevices.video.getFrame({
                 format: Video.FORMAT_IMAGE_DATA,
-                dimensions: Scratch3VideoSensingBlocks.DIMENSIONS
+                dimensions: this.dimensions
             });
             if (frame) {
                 this._lastUpdate = time;
