@@ -20,6 +20,7 @@ const builtinExtensions = {
     text2speech: () => require('../extensions/scratch3_text2speech'),
     translate: () => require('../extensions/scratch3_translate'),
     videoSensing: () => require('../extensions/scratch3_video_sensing'),
+    speech2text: () => require('../extensions/scratch3_speech2text'),
     ev3: () => require('../extensions/scratch3_ev3'),
     makeymakey: () => require('../extensions/scratch3_makeymakey'),
     boost: () => require('../extensions/scratch3_boost'),
@@ -201,9 +202,11 @@ class ExtensionManager {
     /**
      * Collect extension metadata from the specified service and begin the extension registration process.
      * @param {string} serviceName - the name of the service hosting the extension.
+     * @param {string} extensionURL - the URL of the extension
      */
-    registerExtensionService (serviceName) {
+    registerExtensionService (serviceName, extensionURL) {
         dispatch.call(serviceName, 'getInfo').then(info => {
+            info.extensionURL = extensionURL;
             this._registerExtensionInfo(serviceName, info);
         });
     }
@@ -272,6 +275,9 @@ class ExtensionManager {
         extensionInfo = Object.assign({}, extensionInfo);
         if (!/^[a-z0-9]+$/i.test(extensionInfo.id)) {
             throw new Error('Invalid extension id');
+        }
+        if (extensionInfo.extensionURL) {
+          this._loadedExtensions.set(extensionInfo.id, serviceName);
         }
         extensionInfo.name = extensionInfo.name || extensionInfo.id;
         extensionInfo.blocks = extensionInfo.blocks || [];
@@ -411,7 +417,7 @@ class ExtensionManager {
             const callBlockFunc = (() => {
                 if (dispatch._isRemoteService(serviceName)) {
                     return (args, util, realBlockInfo) =>
-                        dispatch.call(serviceName, funcName, args, util, realBlockInfo);
+                        dispatch.call(serviceName, funcName, args);
                 }
 
                 // avoid promise latency if we can call direct
