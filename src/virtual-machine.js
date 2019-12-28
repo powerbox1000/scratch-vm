@@ -44,7 +44,7 @@ const CORE_EXTENSIONS = [
  * @constructor
  */
 class VirtualMachine extends EventEmitter {
-    constructor (stageWidth, stageHeight) {
+    constructor (stageWidth = 640, stageHeight = 360) {
         super();
 
         /**
