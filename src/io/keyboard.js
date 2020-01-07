@@ -59,10 +59,6 @@ class Keyboard {
         case 'ArrowDown': return KEY_NAME.DOWN;
         case 'Enter': return KEY_NAME.ENTER;
         }
-        // Ignore modifier keys
-        if (keyString.length > 1) {
-            return '';
-        }
         return keyString.toUpperCase();
     }
 
@@ -93,11 +89,6 @@ class Keyboard {
         // If the arg matches a special key name, return it.
         if (KEY_NAME_LIST.includes(keyArg)) {
             return keyArg;
-        }
-
-        // Use only the first character.
-        if (keyArg.length > 1) {
-            keyArg = keyArg[0];
         }
 
         // Check for the space character.
