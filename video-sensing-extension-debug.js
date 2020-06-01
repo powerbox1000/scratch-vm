@@ -82,12 +82,12 @@ var VirtualMachine =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 475);
+/******/ 	return __webpack_require__(__webpack_require__.s = 472);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 133:
+/***/ 132:
 /***/ (function(module, exports, __webpack_require__) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -104,9 +104,22 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *
  * Video motion sensing primitives.
  */
-var _require = __webpack_require__(80),
+var _require = __webpack_require__(79),
     motionVector = _require.motionVector,
     scratchAtan2 = _require.scratchAtan2;
+/**
+ * The width of the intended resolution to analyze for motion.
+ * @type {number}
+ */
+
+
+var WIDTH = 480;
+/**
+ * The height of the intended resolution to analyze for motion.
+ * @type {number}
+ */
+
+var HEIGHT = 360;
 /**
  * A constant value to scale the magnitude of the x and y components called u
  * and v. This creates the motionAmount value.
@@ -115,7 +128,6 @@ var _require = __webpack_require__(80),
  *
  * @type {number}
  */
-
 
 var AMOUNT_SCALE = 100;
 /**
@@ -168,25 +180,13 @@ var LOCAL_THRESHOLD = THRESHOLD / 3;
 var VideoMotion =
 /*#__PURE__*/
 function () {
-  function VideoMotion(width, height) {
+  function VideoMotion() {
     _classCallCheck(this, VideoMotion);
 
-    /**
-     * The width of the intended resolution to analyze for motion.
-     * @type {number}
-     */
-    this.width = width;
-    /**
-     * The height of the intended resolution to analyze for motion.
-     * @type {number}
-     */
-
-    this.height = height;
     /**
      * The number of frames that have been added from a source.
      * @type {number}
      */
-
     this.frameNumber = 0;
     /**
      * The frameNumber last analyzed.
@@ -226,21 +226,21 @@ function () {
      * @type {number}
      */
 
-    this._arrays = new ArrayBuffer(this.width * this.height * 2 * 1);
+    this._arrays = new ArrayBuffer(WIDTH * HEIGHT * 2 * 1);
     /**
      * A clamped uint8 view of _arrays. One component of each index of the
      * curr member is copied into this array.
      * @type {number}
      */
 
-    this._curr = new Uint8ClampedArray(this._arrays, this.width * this.height * 0 * 1, this.width * this.height);
+    this._curr = new Uint8ClampedArray(this._arrays, WIDTH * HEIGHT * 0 * 1, WIDTH * HEIGHT);
     /**
      * A clamped uint8 view of _arrays. One component of each index of the
      * prev member is copied into this array.
      * @type {number}
      */
 
-    this._prev = new Uint8ClampedArray(this._arrays, this.width * this.height * 1 * 1, this.width * this.height);
+    this._prev = new Uint8ClampedArray(this._arrays, WIDTH * HEIGHT * 1 * 1, WIDTH * HEIGHT);
   }
   /**
    * Reset internal state so future frame analysis does not consider values
@@ -304,8 +304,8 @@ function () {
       var curr = this._curr,
           prev = this._prev;
       var winStep = WINSIZE * 2 + 1;
-      var wmax = this.width - WINSIZE - 1;
-      var hmax = this.height - WINSIZE - 1; // Accumulate 2d motion vectors from groups of pixels and average it
+      var wmax = WIDTH - WINSIZE - 1;
+      var hmax = HEIGHT - WINSIZE - 1; // Accumulate 2d motion vectors from groups of pixels and average it
       // later.
 
       var uu = 0;
@@ -322,11 +322,11 @@ function () {
           var C1 = 0;
           var C2 = 0; // This is a performance critical math region.
 
-          var address = (i - WINSIZE) * this.width + j - WINSIZE;
+          var address = (i - WINSIZE) * WIDTH + j - WINSIZE;
           var nextAddress = address + winStep;
-          var maxAddress = (i + WINSIZE) * this.width + j + WINSIZE;
+          var maxAddress = (i + WINSIZE) * WIDTH + j + WINSIZE;
 
-          for (; address <= maxAddress; address += this.width - winStep, nextAddress += this.width) {
+          for (; address <= maxAddress; address += WIDTH - winStep, nextAddress += WIDTH) {
             for (; address <= nextAddress; address += 1) {
               // The difference in color between the last frame and
               // the current frame.
@@ -336,7 +336,7 @@ function () {
               var gradX = curr[address - 1] - curr[address + 1]; // The difference between the pixel above and the pixel
               // below.
 
-              var gradY = curr[address - this.width] - curr[address + this.width]; // Add the combined values of this pixel to previously
+              var gradY = curr[address - WIDTH] - curr[address + WIDTH]; // Add the combined values of this pixel to previously
               // considered pixels.
 
               A2 += gradX * gradX;
@@ -404,10 +404,10 @@ function () {
         var boundingRect = drawable.getFastBounds(); // Transform the bounding box from scratch space to a space from 0,
         // 0 to WIDTH, HEIGHT.
 
-        var xmin = Math.max(Math.floor(boundingRect.left + this.width / 2), 1);
-        var xmax = Math.min(Math.floor(boundingRect.right + this.width / 2), this.width - 1);
-        var ymin = Math.max(Math.floor(this.height / 2 - boundingRect.top), 1);
-        var ymax = Math.min(Math.floor(this.height / 2 - boundingRect.bottom), this.height - 1);
+        var xmin = Math.max(Math.floor(boundingRect.left + WIDTH / 2), 1);
+        var xmax = Math.min(Math.floor(boundingRect.right + WIDTH / 2), WIDTH - 1);
+        var ymin = Math.max(Math.floor(HEIGHT / 2 - boundingRect.top), 1);
+        var ymax = Math.min(Math.floor(HEIGHT / 2 - boundingRect.bottom), HEIGHT - 1);
         var A2 = 0;
         var A1B2 = 0;
         var B1 = 0;
@@ -422,13 +422,13 @@ function () {
             // HEIGHT and 0 to WIDTH. Transform that into Scratch's
             // range of HEIGHT / 2 to -HEIGHT / 2 and -WIDTH / 2 to
             // WIDTH / 2;
-            position[0] = j - this.width / 2;
-            position[1] = this.height / 2 - i; // Consider only pixels in the drawable that can touch the
+            position[0] = j - WIDTH / 2;
+            position[1] = HEIGHT / 2 - i; // Consider only pixels in the drawable that can touch the
             // edge or other drawables. Empty space in the current skin
             // is skipped.
 
             if (drawable.isTouching(position)) {
-              var address = i * this.width + j; // The difference in color between the last frame and
+              var address = i * WIDTH + j; // The difference in color between the last frame and
               // the current frame.
 
               var gradT = prev[address] - curr[address]; // The difference between the pixel to the left and the
@@ -437,7 +437,7 @@ function () {
               var gradX = curr[address - 1] - curr[address + 1]; // The difference between the pixel above and the pixel
               // below.
 
-              var gradY = curr[address - this.width] - curr[address + this.width]; // Add the combined values of this pixel to previously
+              var gradY = curr[address - WIDTH] - curr[address + WIDTH]; // Add the combined values of this pixel to previously
               // considered pixels.
 
               A2 += gradX * gradX;
@@ -493,15 +493,15 @@ module.exports = VideoMotion;
 
 /***/ }),
 
-/***/ 475:
+/***/ 472:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Scratch3VideoSensingDebug"] = __webpack_require__(476);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Scratch3VideoSensingDebug"] = __webpack_require__(473);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 
-/***/ 476:
+/***/ 473:
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -510,8 +510,8 @@ module.exports = VideoMotion;
  * @file debug.js
  */
 
-const VideoMotion = __webpack_require__(133);
-const VideoMotionView = __webpack_require__(477);
+const VideoMotion = __webpack_require__(132);
+const VideoMotionView = __webpack_require__(474);
 
 module.exports = {
     VideoMotion,
@@ -521,7 +521,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 477:
+/***/ 474:
 /***/ (function(module, exports, __webpack_require__) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -530,9 +530,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _require = __webpack_require__(80),
+var _require = __webpack_require__(79),
     motionVector = _require.motionVector;
 
+var WIDTH = 480;
+var HEIGHT = 360;
 var WINSIZE = 8;
 var AMOUNT_SCALE = 100;
 var THRESHOLD = 10;
@@ -701,8 +703,8 @@ function () {
      */
 
     var canvas = this.canvas = document.createElement('canvas');
-    canvas.width = motion.width;
-    canvas.height = motion.height;
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
     /**
      * 2D context to draw to debug canvas.
      * @type {CanvasRendering2DContext}
@@ -720,7 +722,7 @@ function () {
      * @type {Uint32Array}
      */
 
-    this.buffer = new Uint32Array(motion.width * motion.height);
+    this.buffer = new Uint32Array(WIDTH * HEIGHT);
   }
   /**
    * Modes of debug output that can be rendered.
@@ -742,7 +744,7 @@ function () {
     value: function _eachAddress(xStart, yStart, xStop, yStop, fn) {
       for (var i = yStart; i < yStop; i++) {
         for (var j = xStart; j < xStop; j++) {
-          var address = i * this.motion.width + j;
+          var address = i * WIDTH + j;
           fn(address, j, i);
         }
       }
@@ -796,7 +798,7 @@ function () {
           curr = _this$motion.curr,
           prev = _this$motion.prev;
       var gradX = (curr[address - 1] & 0xff) - (curr[address + 1] & 0xff);
-      var gradY = (curr[address - this.motion.width] & 0xff) - (curr[address + this.motion.width] & 0xff);
+      var gradY = (curr[address - WIDTH] & 0xff) - (curr[address + WIDTH] & 0xff);
       var gradT = (prev[address] & 0xff) - (curr[address] & 0xff);
       return {
         gradX: gradX,
@@ -860,13 +862,13 @@ function () {
       if (this.output === OUTPUT.INPUT) {
         var curr = this.motion.curr;
 
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           buffer[address] = curr[address];
         });
       }
 
       if (this.output === OUTPUT.XYT) {
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           var _this3$_grads = _this3._grads(address),
               gradX = _this3$_grads.gradX,
               gradY = _this3$_grads.gradY,
@@ -879,8 +881,8 @@ function () {
 
       if (this.output === OUTPUT.XYT_CELL) {
         var winStep = WINSIZE * 2 + 1;
-        var wmax = this.motion.width - WINSIZE - 1;
-        var hmax = this.motion.height - WINSIZE - 1;
+        var wmax = WIDTH - WINSIZE - 1;
+        var hmax = HEIGHT - WINSIZE - 1;
 
         this._eachCell(WINSIZE + 1, WINSIZE + 1, wmax, hmax, winStep, winStep, function (eachAddress) {
           var C1 = 0;
@@ -907,7 +909,7 @@ function () {
       }
 
       if (this.output === OUTPUT.XY) {
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           var _this3$_grads3 = _this3._grads(address),
               gradX = _this3$_grads3.gradX,
               gradY = _this3$_grads3.gradY;
@@ -919,9 +921,9 @@ function () {
       if (this.output === OUTPUT.XY_CELL) {
         var _winStep = WINSIZE * 2 + 1;
 
-        var _wmax = this.motion.width - WINSIZE - 1;
+        var _wmax = WIDTH - WINSIZE - 1;
 
-        var _hmax = this.motion.height - WINSIZE - 1;
+        var _hmax = HEIGHT - WINSIZE - 1;
 
         this._eachCell(WINSIZE + 1, WINSIZE + 1, _wmax, _hmax, _winStep, _winStep, function (eachAddress) {
           var C1 = 0;
@@ -945,7 +947,7 @@ function () {
           });
         });
       } else if (this.output === OUTPUT.T) {
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           var _this3$_grads5 = _this3._grads(address),
               gradT = _this3$_grads5.gradT;
 
@@ -956,9 +958,9 @@ function () {
       if (this.output === OUTPUT.T_CELL) {
         var _winStep2 = WINSIZE * 2 + 1;
 
-        var _wmax2 = this.motion.width - WINSIZE - 1;
+        var _wmax2 = WIDTH - WINSIZE - 1;
 
-        var _hmax2 = this.motion.height - WINSIZE - 1;
+        var _hmax2 = HEIGHT - WINSIZE - 1;
 
         this._eachCell(WINSIZE + 1, WINSIZE + 1, _wmax2, _hmax2, _winStep2, _winStep2, function (eachAddress) {
           var T = 0;
@@ -976,7 +978,7 @@ function () {
           });
         });
       } else if (this.output === OUTPUT.C) {
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           var _this3$_grads7 = _this3._grads(address),
               gradX = _this3$_grads7.gradX,
               gradY = _this3$_grads7.gradY,
@@ -989,9 +991,9 @@ function () {
       if (this.output === OUTPUT.C_CELL) {
         var _winStep3 = WINSIZE * 2 + 1;
 
-        var _wmax3 = this.motion.width - WINSIZE - 1;
+        var _wmax3 = WIDTH - WINSIZE - 1;
 
-        var _hmax3 = this.motion.height - WINSIZE - 1;
+        var _hmax3 = HEIGHT - WINSIZE - 1;
 
         this._eachCell(WINSIZE + 1, WINSIZE + 1, _wmax3, _hmax3, _winStep3, _winStep3, function (eachAddress) {
           var _this3$_components = _this3._components(eachAddress),
@@ -1005,7 +1007,7 @@ function () {
           });
         });
       } else if (this.output === OUTPUT.AB) {
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           var _this3$_grads8 = _this3._grads(address),
               gradX = _this3$_grads8.gradX,
               gradY = _this3$_grads8.gradY;
@@ -1017,9 +1019,9 @@ function () {
       if (this.output === OUTPUT.AB_CELL) {
         var _winStep4 = WINSIZE * 2 + 1;
 
-        var _wmax4 = this.motion.width - WINSIZE - 1;
+        var _wmax4 = WIDTH - WINSIZE - 1;
 
-        var _hmax4 = this.motion.height - WINSIZE - 1;
+        var _hmax4 = HEIGHT - WINSIZE - 1;
 
         this._eachCell(WINSIZE + 1, WINSIZE + 1, _wmax4, _hmax4, _winStep4, _winStep4, function (eachAddress) {
           var _this3$_components2 = _this3._components(eachAddress),
@@ -1037,7 +1039,7 @@ function () {
       } else if (this.output === OUTPUT.UV) {
         var _winStep5 = WINSIZE * 2 + 1;
 
-        this._eachAddress(1, 1, this.motion.width - 1, this.motion.height - 1, function (address) {
+        this._eachAddress(1, 1, WIDTH - 1, HEIGHT - 1, function (address) {
           var _this3$_components3 = _this3._components(function (fn) {
             return fn(address);
           }),
@@ -1059,9 +1061,9 @@ function () {
       } else if (this.output === OUTPUT.UV_CELL) {
         var _winStep6 = WINSIZE * 2 + 1;
 
-        var _wmax5 = this.motion.width - WINSIZE - 1;
+        var _wmax5 = WIDTH - WINSIZE - 1;
 
-        var _hmax5 = this.motion.height - WINSIZE - 1;
+        var _hmax5 = HEIGHT - WINSIZE - 1;
 
         this._eachCell(WINSIZE + 1, WINSIZE + 1, _wmax5, _hmax5, _winStep6, _winStep6, function (eachAddress) {
           var _this3$_components4 = _this3._components(eachAddress),
@@ -1084,7 +1086,7 @@ function () {
         });
       }
 
-      var data = new ImageData(new Uint8ClampedArray(this.buffer.buffer), this.motion.width, this.motion.height);
+      var data = new ImageData(new Uint8ClampedArray(this.buffer.buffer), WIDTH, HEIGHT);
       this.context.putImageData(data, 0, 0);
     }
   }], [{
@@ -1128,7 +1130,7 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 80:
+/***/ 79:
 /***/ (function(module, exports) {
 
 /**
