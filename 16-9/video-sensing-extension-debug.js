@@ -82,12 +82,12 @@ var VirtualMachine =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 474);
+/******/ 	return __webpack_require__(__webpack_require__.s = 475);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 132:
+/***/ 133:
 /***/ (function(module, exports, __webpack_require__) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -104,7 +104,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *
  * Video motion sensing primitives.
  */
-var _require = __webpack_require__(79),
+var _require = __webpack_require__(80),
     motionVector = _require.motionVector,
     scratchAtan2 = _require.scratchAtan2;
 /**
@@ -493,15 +493,15 @@ module.exports = VideoMotion;
 
 /***/ }),
 
-/***/ 474:
+/***/ 475:
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Scratch3VideoSensingDebug"] = __webpack_require__(475);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Scratch3VideoSensingDebug"] = __webpack_require__(476);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 
-/***/ 475:
+/***/ 476:
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -510,8 +510,8 @@ module.exports = VideoMotion;
  * @file debug.js
  */
 
-const VideoMotion = __webpack_require__(132);
-const VideoMotionView = __webpack_require__(476);
+const VideoMotion = __webpack_require__(133);
+const VideoMotionView = __webpack_require__(477);
 
 module.exports = {
     VideoMotion,
@@ -521,7 +521,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 476:
+/***/ 477:
 /***/ (function(module, exports, __webpack_require__) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -530,7 +530,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _require = __webpack_require__(79),
+var _require = __webpack_require__(80),
     motionVector = _require.motionVector;
 
 var WINSIZE = 8;
@@ -1128,7 +1128,7 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 79:
+/***/ 80:
 /***/ (function(module, exports) {
 
 /**
