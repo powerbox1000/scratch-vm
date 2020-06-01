@@ -8,6 +8,7 @@ const MathUtil = require('../../util/math-util');
 const RenderedTarget = require('../../sprites/rendered-target');
 const log = require('../../util/log');
 const StageLayering = require('../../engine/stage-layering');
+const limits = require('../../util/limits.js');
 
 /**
  * Icon svg to be displayed at the left edge of each extension block, encoded as a data URI.
@@ -97,7 +98,7 @@ class Scratch3PenBlocks {
      * @type {{min: number, max: number}}
      */
     static get PEN_SIZE_RANGE () {
-        return {min: 1, max: 1200};
+        return {min: 1, max: limits() ? 1200 : Infinity};
     }
 
     /**

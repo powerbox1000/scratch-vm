@@ -19,6 +19,7 @@ const formatMessage = require('format-message');
 
 const Variable = require('./engine/variable');
 const newBlockIds = require('./util/new-block-ids');
+const limits = require('./util/limits');
 
 const {loadCostume} = require('./import/load-costume.js');
 const {loadSound} = require('./import/load-sound.js');
@@ -1539,6 +1540,14 @@ class VirtualMachine extends EventEmitter {
      */
     configureScratchLinkSocketFactory (factory) {
         this.runtime.configureScratchLinkSocketFactory(factory);
+    }
+
+    /**
+     * Set whether protective limits should be imposed.
+     * @param {boolean} yes Whether they should be imposed.
+     */
+    requireLimits (yes) {
+        limits(yes);
     }
 }
 

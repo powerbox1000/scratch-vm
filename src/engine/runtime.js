@@ -29,6 +29,7 @@ const Video = require('../io/video');
 
 const StringUtil = require('../util/string-util');
 const uid = require('../util/uid');
+const limits = require('../util/limits.js');
 
 const defaultBlockPackages = {
     scratch3_control: require('../blocks/scratch3_control'),
@@ -702,7 +703,7 @@ class Runtime extends EventEmitter {
      * @const {number}
      */
     static get MAX_CLONES () {
-        return 300;
+        return limits() ? 300 : Infinity;
     }
 
     // -----------------------------------------------------------------------------

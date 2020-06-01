@@ -5,6 +5,7 @@ const Cast = require('../../util/cast');
 const formatMessage = require('format-message');
 const MathUtil = require('../../util/math-util');
 const Timer = require('../../util/timer');
+const limits = require('../../util/limits.js');
 
 /**
  * The instrument and drum sounds, loaded as static assets.
@@ -692,7 +693,7 @@ class Scratch3MusicBlocks {
      * @type {{min: number, max: number}}
      */
     static get MIDI_NOTE_RANGE () {
-        return {min: 0, max: 130};
+        return {min: limits() ? 0 : -Infinity, max: limits() ? 130 : Infinity};
     }
 
     /**
@@ -701,14 +702,14 @@ class Scratch3MusicBlocks {
      * @type {{min: number, max: number}}
      */
     static get BEAT_RANGE () {
-        return {min: 0, max: 100};
+        return {min: 0, max: limits() ? 100 : Infinity};
     }
 
     /** The minimum and maximum tempo values, in bpm.
      * @type {{min: number, max: number}}
      */
     static get TEMPO_RANGE () {
-        return {min: 20, max: 500};
+        return {min: limits() ? 20 : 1, max: limits() ? 500 : Infinity};
     }
 
     /**
@@ -716,7 +717,7 @@ class Scratch3MusicBlocks {
      * @type {number}
      */
     static get CONCURRENCY_LIMIT () {
-        return 30;
+        return limits() ? 30 : Infinity;
     }
 
     /**

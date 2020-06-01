@@ -1,6 +1,7 @@
 const MathUtil = require('../util/math-util');
 const Cast = require('../util/cast');
 const Clone = require('../util/clone');
+const limits = require('../util/limits.js');
 
 /**
  * Occluded boolean value to make its use more understandable.
@@ -61,7 +62,7 @@ class Scratch3SoundBlocks {
      * @type {{min: number, max: number}}
      */
     static get MIDI_NOTE_RANGE () {
-        return {min: 36, max: 96}; // C2 to C7
+        return {min: limits() ? 36 : -Infinity, max: limits() ? 96 : Infinity}; // C2 to C7
     }
 
     /**
@@ -70,14 +71,14 @@ class Scratch3SoundBlocks {
      * @type {{min: number, max: number}}
      */
     static get BEAT_RANGE () {
-        return {min: 0, max: 100};
+        return {min: 0, max: limits() ? 100 : Infinity};
     }
 
     /** The minimum and maximum tempo values, in bpm.
      * @type {{min: number, max: number}}
      */
     static get TEMPO_RANGE () {
-        return {min: 20, max: 500};
+        return {min: limits() ? 20 : 1, max: limits() ? 500 : Infinity};
     }
 
     /** The minimum and maximum values for each sound effect.
@@ -85,7 +86,7 @@ class Scratch3SoundBlocks {
      */
     static get EFFECT_RANGE () {
         return {
-            pitch: {min: -360, max: 360}, // -3 to 3 octaves
+            pitch: {min: limits() ? -360 : -Infinity, max: limits() ? 360 : Infinity}, // -3 to 3 octaves
             pan: {min: -100, max: 100} // 100% left to 100% right
         };
     }

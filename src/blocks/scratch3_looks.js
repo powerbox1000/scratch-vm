@@ -5,6 +5,7 @@ const uid = require('../util/uid');
 const StageLayering = require('../engine/stage-layering');
 const getMonitorIdForBlockWithArgs = require('../util/get-monitor-id');
 const MathUtil = require('../util/math-util');
+const limits = require('../util/limits.js');
 
 /**
  * @typedef {object} BubbleState - the bubble state associated with a particular target.
@@ -65,7 +66,7 @@ class Scratch3LooksBlocks {
      * @const {string}
      */
     static get SAY_BUBBLE_LIMIT () {
-        return 330;
+        return limits() ? 330 : Infinity;
     }
 
     /**
@@ -418,7 +419,7 @@ class Scratch3LooksBlocks {
                     const lowerBound = 0;
                     const upperBound = numCostumes - 1;
                     const costumeToExclude = stage.currentCostume;
-                    
+
                     const nextCostume = MathUtil.inclusiveRandIntWithout(lowerBound, upperBound, costumeToExclude);
 
                     stage.setCostume(nextCostume);

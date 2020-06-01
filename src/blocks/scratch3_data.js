@@ -1,4 +1,5 @@
 const Cast = require('../util/cast');
+const limits = require('../util/limits.js');
 
 class Scratch3DataBlocks {
     constructor (runtime) {
@@ -250,7 +251,7 @@ class Scratch3DataBlocks {
      * @const {string}
      */
     static get LIST_ITEM_LIMIT () {
-        return 200000;
+        return limits() ? 200000 : Infinity;
     }
 }
 
